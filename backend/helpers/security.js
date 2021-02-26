@@ -6,7 +6,7 @@ const { JWTSECRET } = config;
 export const verify = (req, res) => {
 	const token = req.header('Authorization').split(' ')[1];
 	if (!token) {
-		res.status('401').send('Access denied. No token provided');
+		res.status('401').send('Access denied');
 		return false;
 	}
 

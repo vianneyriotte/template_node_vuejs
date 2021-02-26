@@ -44,10 +44,10 @@ const insertOrUpdate_MATABLE = async () => {
 	loggers.trace('Insert ou Update de la table ma_table');
 	try {
 		const sql = `
-                insert into ma_table (TEXT, DATE_CREATION)
-                values (1, Texte", now())
+                insert into ma_table (Id, Value, DATE_CREATION)
+                values (1, "Texte", now())
                 ON DUPLICATE KEY UPDATE
-                TEXT = "Texte update", DATE_CREATION = now() WHERE ID = 1
+                Value = "Texte update", DATE_CREATION = now()
             `;
 		await dbconnection().executeQuery(sql);
 	} catch (_) {

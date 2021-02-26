@@ -1,10 +1,20 @@
 import express from 'express';
 import security from '../helpers/security';
+import config from '../config';
+
+const { loggers } = config;
 
 const router = express.Router();
 
 router.post('/auth/login', async function(req, res) {
-	const token = security.sign({ id: 1, email: 'vianney.riotte@gmail.com' });
+	const { email, password } = req.body;
+
+	loggers.trace(`Tentative de connexion de l'utilisateur '${email}'`);
+
+	// TODO : procédure d'authentification ...
+
+	const token = security.sign({ id: 1, email, name: 'User' });
+
 	res.send({ token });
 });
 

@@ -1,0 +1,63 @@
+# ./docker/docker-compose.yml
+
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: ./node.dockerfile
+    image: backend
+    container_name: backend
+    tty: true
+    stdin_open: true
+    env_file:
+      - ./backend/.env
+    ports:
+      - 3001:3001
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - app-network
+  frontend:
+    build:
+      context: ./
+      dockerfile: ./vue.dockerfile
+    container_name: frontend
+    image: frontend
+    env_file:
+      - ./frontend/.env
+    tty: true
+    stdin_open: true
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - app-network
+  mysql-server:
+    image: mysql/mysql-server:8.0.22-1.1.18
+    container_name: mysql-server
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - TZ=Europe/Paris
+    ports:
+      - 3306:3306
+    volumes:
+      - ./_data/mysql:/var/lib/mysql
+    networks:
+      - app-network
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - 3002:8080
+    links:
+      - mysql-server:db
+    networks:
+      - app-network
+networks:
+  app-network:
+    name: app-dev-network

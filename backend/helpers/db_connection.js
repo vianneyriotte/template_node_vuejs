@@ -1,5 +1,5 @@
 const db_connection = ({ MYSQL_DBHOST, MYSQL_DBUSER, MYSQL_DBPWD, MYSQL_DBPORT, databaseName }) => {
-	newConn = (databaseName) =>
+	const newConn = (databaseName) =>
 		require('serverless-mysql')({
 			config: {
 				host: MYSQL_DBHOST,
@@ -11,30 +11,49 @@ const db_connection = ({ MYSQL_DBHOST, MYSQL_DBUSER, MYSQL_DBPWD, MYSQL_DBPORT, 
 		});
 
 	return {
-		executeQuery: (sql, values) => {
-			return new Promise((resolve, reject) => {
-				db = newConn(databaseName);
-				try {
-					db.connect();
-					if (values) {
-						db.query(sql, values, (err, rows) => {
-							if (err) return reject(err);
-							resolve(rows);
-						});
-					} else {
-						db.query(sql, (err, rows) => {
-							if (err) return reject(err);
-							resolve(rows);
-						});
-					}
-				} catch (_) {
-					reject(_);
-				} finally {
-					try {
-						db.end();
-					} catch (_) {}
+		// executeQuery: async (sql, values) => {
+		// 	return new Promise((resolve, reject) => {
+		// 		db = newConn(databaseName);
+		// 		try {
+		// 			db.connect();
+		// 			if (values) {
+		// 				db.query(sql, values, (err, rows) => {
+		// 					if (err) return reject(err);
+		// 					resolve(rows);
+		// 				});
+		// 			} else {
+		// 				db.query(sql, (err, rows) => {
+		// 					if (err) return reject(err);
+		// 					resolve(rows);
+		// 				});
+		// 			}
+		// 		} catch (_) {
+		// 			reject(_);
+		// 		} finally {
+		// 			try {
+		// 				db.end();
+		// 			} catch (_) {}
+		// 		}
+		// 	});
+		// },
+		executeQuery: async (sql, values) => {
+			const db = newConn(databaseName);
+			try {
+				await db.connect();
+				if (values) {
+					const rows = await db.query(sql, values);
+					return rows;
+				} else {
+					const rows = await db.query(sql);
+					return rows;
 				}
-			});
+			} catch (_) {
+				throw _;
+			} finally {
+				try {
+					db.end();
+				} catch (_) {}
+			}
 		},
 		/*
         // ****************************************
@@ -58,7 +77,7 @@ const db_connection = ({ MYSQL_DBHOST, MYSQL_DBUSER, MYSQL_DBPWD, MYSQL_DBPORT, 
 		}
         */
 		executeTransaction: async (requests) => {
-			let db = newConn(databaseName);
+			const db = newConn(databaseName);
 			var queries = db.transaction();
 			try {
 				for (let index in requests) {
