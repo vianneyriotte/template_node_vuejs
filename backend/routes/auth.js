@@ -6,7 +6,7 @@ const { loggers } = config;
 
 const router = express.Router();
 
-router.post('/auth/login', async function(req, res) {
+router.post('/login', async function(req, res) {
 	const { email, password } = req.body;
 
 	loggers.trace(`Tentative de connexion de l'utilisateur '${email}'`);

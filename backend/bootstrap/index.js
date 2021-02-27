@@ -3,7 +3,7 @@ import cors from 'cors';
 //import * as morgan from 'morgan';
 const morgan = require('morgan'); // Pour éviter un warning deprecated
 import bodyParser from 'body-parser';
-import database_updates from '../database-updates';
+
 import config from '../config';
 import routes from '../routes';
 
@@ -45,8 +45,6 @@ const server = {
 	start: () => {
 		// Démarrage du serveur
 		app.listen(port, async function() {
-			// Mise à jour de la base de données
-			await database_updates.update();
 			const msg = `http://localhost:${port}`;
 			if (loggers.info.enabled) {
 				loggers.info(msg);

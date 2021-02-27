@@ -14,7 +14,7 @@ const loggers = {
 
 const config = {
 	port: process.env.SERVER_PORT || 3001,
-	db: _.pick(process.env, [ 'MYSQL_DBHOST', 'MYSQL_DBUSER', 'MYSQL_DBPWD', 'MYSQL_DBPORT', 'DBNAME' ]),
+	db: _.pick(process.env, [ 'MYSQL_DBHOST', 'MYSQL_DBUSER', 'MYSQL_DBPWD', 'MYSQL_DBPORT', 'DBNAME', 'DB_LOGS' ]),
 	jwtsecret: process.env.JWTSECRET,
 	prod_env: !process.env.PLATFORM, // Par défaut, si rien n'est fourni, c'est l'env. de produciton
 	dev_env: process.env.PLATFORM && process.env.PLATFORM == 'dev',

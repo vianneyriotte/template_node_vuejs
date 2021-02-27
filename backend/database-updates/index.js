@@ -1,4 +1,6 @@
 import DbConnection from '../helpers/db_connection';
+import models from '../models';
+import { salt, saltVerify } from '../helpers/security';
 import config from '../config';
 
 const { db, loggers } = config;
@@ -55,6 +57,14 @@ const insertOrUpdate_MATABLE = async () => {
 	}
 };
 
+const addUserDemo = async () => {
+	//await models.User.create({ email: 'user@demo.com', firstname: 'John', lastname: 'DOE' });
+	const user = await models.User.findOrCreate({
+		where: { email: 'john@doe.com' },
+		defaults: { email: 'john@doe.com', firstname: 'John', lastname: 'DOE', password: salt('abcd') }
+	});
+};
+
 export default {
 	update: async () => {
 		loggers.trace('Mise à jour de la base de données si necessaire...');
@@ -62,6 +72,8 @@ export default {
 		await create_MATABLE();
 		await add_Column_DateCreation_MATABLE();
 		await insertOrUpdate_MATABLE();
+
+		await addUserDemo();
 
 		loggers.trace('Fin de la mise à jour de la base.');
 	}
