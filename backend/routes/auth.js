@@ -1,6 +1,8 @@
 import express from 'express';
 import security from '../helpers/security';
 import config from '../config';
+import response from '../helpers/response';
+import models from '../models';
 
 const { loggers } = config;
 
@@ -12,10 +14,14 @@ router.post('/login', async function(req, res) {
 	loggers.trace(`Tentative de connexion de l'utilisateur '${email}'`);
 
 	// TODO : procédure d'authentification ...
-
-	const token = security.sign({ id: 1, email, name: 'User' });
-
-	res.send({ token });
+	const user = await models.User.findOne({
+		where: { email: 'john@doe.com' }
+	});
+	if (user && security.saltVerify(password, user.password)) {
+		const token = security.sign({ email: user.email, firstname: user.firstname, lastname: user.lastname });
+		return response.Http200(res, { token });
+	}
+	return response.Http401(res, 'Identifiant ou mot de passe incorrect');
 });
 
 export default router;

@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, onMounted } from "vue";
 import storage from "./helpers/storage";
 import Header from "./components/Header.vue";
 import router from "./router";
@@ -20,4 +20,8 @@ const onDeconnectionClick = async () => {
   }
   router.replace("/Login");
 }
+
+onMounted(async () => {
+  await storage.isConnected(true);
+});
 </script>

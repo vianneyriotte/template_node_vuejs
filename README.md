@@ -174,7 +174,7 @@ Un projet Vue est un projet dans un langage orienté "**Components**" (comme Rea
 
 Les composants parents fournissent aux composants enfants des valeurs de **propriétés** (*:nom*), des **méthodes** répondant à des **évenemments** (*@click*). Il est possible d'utiliser des **conditions** (*:v-if*), et des **boucles** (*:v-for*) dans la partie **render**.
 
-Le frontend (comme le backend) founit également un mécanisme de **Routes** (*et donc de Routers*)
+Le frontend (comme le backend) founit également un mécanisme de **Routes**.
 
 >  Il est recommandé de NE PLUS UTILISER JQUERY (sauf grande nécessité). 
 

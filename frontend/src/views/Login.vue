@@ -12,7 +12,7 @@
         required
         autofocus
       />
-      <label for="inputPassword" class="visually-hidden">Mot de passe</label>
+      <label for="inputPassword" class="visually-hidden mt-2">Mot de passe</label>
       <input
         type="password"
         id="inputPassword"
@@ -28,16 +28,30 @@
   
 <script setup>
 import { reactive } from "vue";
+import storage from "../helpers/storage";
+import router from '../router';
+import auth from "../helpers/auth"
+import { useToast } from "vue-toastification";
 
 const state = reactive({ email: null, password: null });
 
-import storage from "../helpers/storage";
-import router from '../router';
+const toast = useToast();
 
 const doConnection = async () => {
   if (!state.email || state.email.length <= 0) return;
-  await storage.setUser({ email: state.email });
-  await router.replace("/");
+  if (!state.password || state.password.length <= 0) return;
+  const result = await auth.connexion(state);
+  if (result) {
+    toast.success("Connexion effectuée avec succès", {
+      timeout: 4000
+    });
+    await router.replace("/");
+  }
+  else {
+    toast.error("Identifiant ou mot de passe incorrect", {
+      timeout: 4000
+    });
+  }
 }
 </script>
 

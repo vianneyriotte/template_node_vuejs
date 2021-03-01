@@ -8,7 +8,7 @@
       </div>
       <div class="p-2 flex-fill flex-grow-1 bd-highlight"></div>
       <div>
-        <a class="navbar-brand" href="#">{{ user && user.email }}</a>
+        <a class="navbar-brand" href="#">{{ user && user.firstname }}</a>
       </div>
       <div>
         <ul class="navbar-nav me-auto mb-2 mb-md-0">

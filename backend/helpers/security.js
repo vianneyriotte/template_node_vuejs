@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import config from '../config';
 import bcrypt from 'bcryptjs';
 
-const { JWTSECRET } = config;
+const { jwtsecret } = config;
 
 export const verify = (req, res) => {
 	const token = req.header('Authorization').split(' ')[1];
@@ -12,8 +12,9 @@ export const verify = (req, res) => {
 	}
 
 	try {
-		const decoded = jwt.verify(token, JWTSECRET);
+		const decoded = jwt.verify(token, jwtsecret);
 		req._USER = decoded;
+		return true;
 	} catch (ex) {
 		res.status('400').send('Invalid token');
 		return false;
@@ -21,7 +22,7 @@ export const verify = (req, res) => {
 };
 
 export const sign = (data) => {
-	const jwtoken = jwt.sign(data, JWTSECRET);
+	const jwtoken = jwt.sign(data, jwtsecret);
 	return jwtoken;
 };
 
@@ -38,5 +39,7 @@ export const saltVerify = (str, salted) => {
 
 export default {
 	verify,
-	sign
+	sign,
+	salt,
+	saltVerify
 };
