@@ -12,7 +12,7 @@ L'environnement de développement sera donc exécuté dans des conteneurs **Dock
 
 ## Pré-requis - Logiciels
 
-- Un système d'exploitation W**indows / MacOS** ou **Linux** :laughing:
+- Un système d'exploitation **Windows** / **MacOS** ou **Linux** :laughing:
 - **Node**
 - **Git**
 - **Docker**
