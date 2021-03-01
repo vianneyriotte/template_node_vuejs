@@ -48,6 +48,7 @@ services:
       - ./_data/mysql:/var/lib/mysql
     networks:
       - app-network
+    command: --socket=/tmp/mysql.sock
   adminer:
     container_name: adminer
     image: adminer
