@@ -11,31 +11,6 @@ const db_connection = ({ MYSQL_DBHOST, MYSQL_DBUSER, MYSQL_DBPWD, MYSQL_DBPORT, 
 		});
 
 	return {
-		// executeQuery: async (sql, values) => {
-		// 	return new Promise((resolve, reject) => {
-		// 		db = newConn(databaseName);
-		// 		try {
-		// 			db.connect();
-		// 			if (values) {
-		// 				db.query(sql, values, (err, rows) => {
-		// 					if (err) return reject(err);
-		// 					resolve(rows);
-		// 				});
-		// 			} else {
-		// 				db.query(sql, (err, rows) => {
-		// 					if (err) return reject(err);
-		// 					resolve(rows);
-		// 				});
-		// 			}
-		// 		} catch (_) {
-		// 			reject(_);
-		// 		} finally {
-		// 			try {
-		// 				db.end();
-		// 			} catch (_) {}
-		// 		}
-		// 	});
-		// },
 		executeQuery: async (sql, values) => {
 			const db = newConn(databaseName);
 			try {

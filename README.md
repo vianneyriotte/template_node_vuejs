@@ -1,33 +1,43 @@
-# Recommandations et bonnes pratiques de développement - Backend/Frontend Node/Vue.js
-
-
+# Proposition de bonnes pratiques de développement - Backend/Frontend Node/Vue.js
 
 ## Objectif
 
-Définir un template de projet Backend/FrontEnd en Node/Vue.js qui fonctionne dans un environnement de développement sous Docker, le plus conforme pour le déploiement sur les plateformes de pré-prod/prod (et à venir le futur K8s).
+Définir un template de projet **Backend/FrontEnd** en **Node/Vue.js** qui fonctionne dans un environnement de développement sous **Docker**, le plus conforme pour le déploiement sur les plateformes de pré-prod/prod (et à venir le futur K8s).
 
-Le template devra prendre en compte l'utilisation de variables d'environnement, de la possibilité de se connecter à une base de données (dans l'exemple MySQL).
+Cet environnement doit fonctionner sur **tous les types de système d'exploitation**, laissant aux developpeurs le libre choix de son système et de sa machine.
 
-L'environnement de développement sera exécuté dans ces conteneurs Docker, pour être au plus proche des environnements d'exploitation (dockers, pods...)
+Le template devra prendre en compte l'utilisation de **variables d'environnement**, de la possibilité de se connecter à une **base de données** (dans l'exemple ici MySQL).
 
-## Pré-requis
+L'environnement de développement sera donc exécuté dans des conteneurs **Docker**, pour être au plus proche des environnements d'exploitation (dockers, pods...)
 
-- Un système d'exploitation Windows / MacOS ou Linux
-- Node
-- Git
-- Docker
-- Visual Studio Code
+## Pré-requis - Logiciels
 
+- Un système d'exploitation W**indows / MacOS** ou **Linux** :laughing:
+- **Node**
+- **Git**
+- **Docker**
+- **Visual Studio Code**
+  - Extensions conseillées: **Docker, Docker explorer, Git lens, DotEnv, LiveServer, Prettier Now (Remi Marsal), Vue 3, Vue 3 Snippet, YAML, Material Icon Theme, Bracket Lens, Bookmarks**
 
+##  Pré-requis langages
+
+Le frontend (vue) comme le backend (node) seront développés en javascript. Il est préférable de coder en ECMASCRIPT 6 (et +)  qui nous apportera les notamment les évolutions suivantes:
+
+- Les "**arrows function**" : permet de réduire le code
+- La manipulation des objets facilitées:
+  - **Spread Operator**, Destructuring
+- **Promise** / **Callback** => **async await**
+- "**import**" qui remplace les "require"
+- L'utilisation de "**export**" et "**export default**"
 
 ## Création de la structure initiale des répertoires
 
-Sur le poste de développement, nous utiliserons node pour créer les projets initiaux, mais également pour lancer les script de lancement *(npm run xxx )* plus facilement sous VSCode.
+Sur le poste de développement, nous utiliserons node pour créer les projets initiaux, mais également pour utiliser des script de lancement *(npm run xxx )* plus facilement sous VSCode. Il sera défini dans le package.json les commandes de lancement docker-compose nécessaires (*ex. lancement du frontend, lancement du backend, arrêt du backend etc.*)
 
-Il serait tout à fait possible d'effectuer la configuration des projets Front et Back sans installation de Node sur le poste de dev, mais cette solution ne sera pas choisie ici.
+Il serait tout à fait possible d'effectuer la configuration initiale des projets Front et Back sans installation de Node sur le poste de dev, mais cette solution ne sera pas choisie ici; ceci afin d'éviter de "perdre du temps" dans l'utilisation de docker en mode "**utilitaire**" pour la conrfiguration des projets.
 
 
-Dans un répertoire dédiée au nouveau module à développer, on va créer la structure des répertoires
+Dans un répertoire dédié au nouveau module à développer, on va créer la structure des répertoires
 
 ```sh
 mkdir mon_projet_web
@@ -42,16 +52,16 @@ npm init -f
 code .
 ```
 
-## Création du projet NodeJS
+## Backend - NodeJS
 
-#### Installation des packages nécessaires
+### Installation des packages nécessaires
 
 ```sh
-cd ../backend
+cd backend
 # Création du package.json
 npm init -y
 # Installation de tous les packages utilisé dans le backend node
-npm i esm express body-parser cors debug morgan jsonwebtoken node-fetch fs moment lodash sequelize serverless-mysql mysql2 bcryptjs
+npm i esm express body-parser cors debug morgan jsonwebtoken node-fetch fs moment lodash sequelize serverless-mysql mysql2 bcryptjs bootstrap sass
 npm i --save-dev nodemon
 ```
 
@@ -64,244 +74,86 @@ Description des packages installés:
 - **<u>cors</u>** : pour gérer la configuration cors (cross origin resource sharing)
 - **<u>debug</u>** : fournit un logger permettant de logger à différents niveaux (debug, trace, error ...)
 - **<u>morgan</u>** : morgan est un middleware express permettant de logger les request/response
--  **<u>jsonwebtoken</u>** : permet de gérer les JWT
+- **<u>jsonwebtoken</u>** : permet de gérer les JWT
 - **<u>node-fetch</u>** : permet de requeter une API HTTP externe
 - **<u>fs</u>** : gestion filesystem
 - **<u>moment</u>** : gestion de dates/time
 - **<u>lodash</u>** : manipulation des liste, array ou autres tools pratiques
 - **<u>sequelize</u>** : ORM pour gérer les données en base
 - **<u>serverless-mysql</u>** : pour requêter sous forme de requêtes SQL lorsqu'il faut dénormaliser ou gérer des données en masse
+- **<u>mysql2</u>**: utilisé par sequelize (orm)
 - **<u>nodemon</u>** : permet d'exécuter le projet en mode développement avec du hot-reloading
+- **<u>bcryptjs</u>**: pour saler les mot de passe
+- **<u>boostrap</u>**: pour les style css boostrap
+- **<u>sass</u>**: utilisation de sass (avec boost rap par exemple ou autre...)
 
-#### Création et configuration du projet
+### Variables d'environnement
 
-Création des fichiers / répertoires
+Un fichier **./sample.env** est founi, il sera donc libre à chaque développeur de recopier ce fichier en "**.env**" afin de définir les valeurs propre à son environnement.
 
-```sh
-touch index.js && mkdir -p bootstrap && touch ./bootstrap/index.js && mkdir -p config && touch ./config/index.js	&& touch .gitignore && touch sample.env && mkdir -p database-updates && touch ./database-updates/index.js && mkdir -p helpers && touch ./helpers/db_connection.js && mkdir -p routes && touch ./routes/index.js && touch ./routes/home.js && touch ./routes/auth.js && mkdir -p middlewares && touch ./middlewares/auth.js && touch ./routes/secured.js && touch ./helpers/security.js
-```
+### "Config" du projet
 
-- **.gitignore**
+Un objet config permet de récupérer toutes les variables d'environnement.
 
-```yaml
-# .gitignore
+Cet objet se trouve dans **./config/index.js**.
 
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
+- Les différents loggers seront initialisés (utilisation du module npm "**Debug**")
+- Le port d'écoute du serveur
+- Les infos de connexion à une base de données (MySQL)
+- La version courante du module
+- Le nom du module
+- L'environnement d'exécution (dev/prod/preprod) 
+- Le SECRET permettant de générer les JSON Web Token
+- ...
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+### Mises à jour de la base de données
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+Les objets/méthodes permettant d'effectuer des requêtes à la base de données sont définis dans **./helpers/db_connection.js**. Il est défini ici comment exécuter des requêtes, ainsi que des transactions.
 
-# Directory for instrumented libs generated by jscoverage/JSCover
-lib-cov
+Dans **./models/*** l'accès aux données est gérée avec l'ORM Sequelize. Dans ce mode, on va manipuler des objets plutôt que des requêtes.
 
-# Coverage directory used by tools like istanbul
-coverage
-*.lcov
+Les mises à jour des données (modifications, ajout de structures, de data ...) sont gérées dans le fichier **./database-updates/index.js**. On y trouver des exemple avec l'utilisation des requêtes mais aussi l'utilisation des objets (*sequelize*).
 
-# nyc test coverage
-.nyc_output
+### Express Server
 
-# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
-.grunt
+**Express** est un "framework" node permettant de gérer les request/response http (get, post, put, delete...)
 
-# Bower dependency directory (https://bower.io/)
-bower_components
+Cette partie serveur Express est configurée dans le fichier **./boostrap/index.js**.
 
-# node-waf configuration
-.lock-wscript
+On y trouvera:
 
-# Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
+- L'import de l'objet config
+- La définition CORS (par défaut qui autorise tout)
+- L'activation de **Morgan** qui est un logger de Request (activé ici en mode dev uniquement)
+- La suppresion d'infos inutiles (*ex. x-powered-by*)
+- La définition des parsers de request: **json**, **urlencoded**
+- L'import et la chargement des routes
 
-# Dependency directories
-node_modules/
-jspm_packages/
+Ce code retourne un object "server" qui contient un méthode "start" permettant de lancer l'écoute du serveur sur le port défini.
 
-# Snowpack dependency directory (https://snowpack.dev/)
-web_modules/
+### Point d'entrée du backend
 
-# TypeScript cache
-*.tsbuildinfo
+Le point d'entrée du backend est le fichier **./index.js**.
 
-# Optional npm cache directory
-.npm
+Il se charge d'exécuter les mises à jour de base de données, puis d'importer le boostrap défini et d'exécuter le serveur (*méthode start()*)
 
-# Optional eslint cache
-.eslintcache
+En mode dev, **nodemon** exécutera ce point d'entrée. Cela permet d'avoir le **hot reloading** dès qu'une modification est effectuée sur le code.
 
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
+### Définition des Routes
 
-# Optional REPL history
-.node_repl_history
+Le framework "**express**" permet de définir des routes pour chaque request. On préfèrera séparer les routes en fonction de leur couverture fonctionnelle.
 
-# Output of 'npm pack'
-*.tgz
+On trouve donc les routes qui sont définis dans "**./routes**" avec le fichier "**./routes/index.js**" qui va rassembler les différentes routes fonctionnelles (*ex. auth/js, secured.js, home.js*).
 
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
-.env.test
-
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
-
-# Next.js build output
-.next
-out
-
-# Nuxt.js build / generate output
-.nuxt
-dist
-
-# Gatsby files
-.cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
-
-# vuepress build output
-.vuepress/dist
-
-# Serverless directories
-.serverless/
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
-# yarn v2
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
-```
-
-- **sample.env** (à copier en .env)
-
-```js
-# sample.env
-
-# Port d'écoute du serveur
-SERVER_PORT=8081
-
-# On active tous les types de logs
-DEBUG=app:debug,app:fatal,app:erreur,app:info,app:trace,app:db
-
-# Pour les JWT
-JWTSECRET=azerty;1234$
-
-# Parametres SGBD
-MYSQL_DBHOST=hlp-sql
-MYSQL_DBUSER=root
-MYSQL_DBPWD=
-MYSQL_DBPORT=3306
-DBNAME=hlp_publicite
-```
-
-- **./database-updates/index.js**
-
-```js
-# ./database-updates/index.js
-
-```
-
-- **./helpers/db_connection.js**
-
-```js
-# ./helpers/db_connection.js
-
-```
-
-- **./routes/home.js**
-
-```js
-# ./routes/home.js
-
-```
-
-- **./routes/auth.js**
-
-```js
-# ./routes/auth.js
-
-```
-
-- **./routes/secured.js**
-
-```js
-# ./routes/secured.js
-
-```
-
-- **./routes/index.js**
-
-```js
-# ./routes/index.js
-
-```
-
-- **./middlewares/auth.js**
-
-```js
-# ./middlewartes/auth.js
-
-```
-
-- **./helpers/security.js**
-
-```js
-# ./helpers/security.js
-
-```
-
-- **./bootstrap/index.js**
-
-```js
-# ./bootstrap/index.js
-
-```
-
-- **./config/index.js**
-
-```js
-# ./config/index.js
-
-```
-
-## Création du projet Frontend (vuejs)
+## Frontend - VueJS
 
 ```sh
 cd frontend
 # Création du projet
+
+# Ancienne méthide avec la CLI vue
 # npx @vue/cli create --default --force .
+
 # Nouvelle méthode avec le projet vitejs
 npm init @vitejs/app -y . -- --template vue
 npm i
@@ -310,7 +162,25 @@ npm run dev
 
 La structure de base d'un projet VueJS a été créé.
 
-Avec vitejs, il est possible de créer des projets template de différents types : vanilla, react, preact, vue, vue (typescript)... https://vitejs.dev/guide/#scaffolding-your-first-vite-project
+Avec **vitejs**, il est possible de créer des projets template de différents types : vanilla, react, preact, vue, vue (typescript)... https://vitejs.dev/guide/#scaffolding-your-first-vite-project
+
+L'avantage de **vitejs** est qu'il est très rapide à créer, très rapide à être exécuté, et très simple à configurer. 
+
+On bénéficie en **Vue 3.0** du mode de programmation "**Reactive**" permettantd'effectuer des des modifications de manière déclarative.
+
+L'architecture d'un projet Vue est très simple. 
+
+Un projet Vue est un projet dans un langage orienté "**Components**" (comme React et Angular)
+
+Les composants parents fournissent aux composants enfants des valeurs de **propriétés** (*:nom*), des **méthodes** répondant à des **évenemments** (*@click*). Il est possible d'utiliser des **conditions** (*:v-if*), et des **boucles** (*:v-for*) dans la partie **render**.
+
+Le frontend (comme le backend) founit également un mécanisme de **Routes** (*et donc de Routers*)
+
+>  Il est recommandé de NE PLUS UTILISER JQUERY (sauf grande nécessité). 
+
+Il est possible de mettre en place **Sass** pour la gestion des styles, et d'utiliser **boostrap** ou autre gestionnaire de styles visuel.
+
+Des modules peuvent être ajouté pour enrichir l'IHM ex: 
 
 ## Configuration Docker
 

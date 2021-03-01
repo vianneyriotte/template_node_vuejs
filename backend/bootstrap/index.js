@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-//import * as morgan from 'morgan';
-const morgan = require('morgan'); // Pour éviter un warning deprecated
+const morgan = require('morgan'); // Hack: Pour éviter un warning deprecated
 import bodyParser from 'body-parser';
 
 import config from '../config';

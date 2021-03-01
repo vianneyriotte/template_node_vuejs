@@ -1,24 +1,23 @@
 <template>
-  <div>
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Hello Vue 3 + Vite" />
-  </div>
+  <Header :user="data.sharedState.user" :onDeconnectionClick="onDeconnectionClick" />
+  <main class="container">
+    <router-view />
+  </main>
 </template>
 
 <script setup>
-import HelloWorld from "./components/HelloWorld.vue";
+import { reactive } from "vue";
+import storage from "./helpers/storage";
+import Header from "./components/Header.vue";
+import router from "./router";
+import { store } from "./store";
 
-// This starter template is using Vue 3 experimental <script setup> SFCs
-// Check out https://github.com/vuejs/rfcs/blob/script-setup-2/active-rfcs/0000-script-setup.md
-</script>
+const data = reactive({ sharedState: store.state });
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+const onDeconnectionClick = async () => {
+  if (data.sharedState.user) {
+    await storage.resetUserAndToken();
+  }
+  router.replace("/Login");
 }
-</style>
+</script>
