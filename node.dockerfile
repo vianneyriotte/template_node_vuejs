@@ -1,4 +1,4 @@
-# ./docker/node.dockerfile
+# ./node.dockerfile
 
 FROM node:15.10.0-alpine3.12
 

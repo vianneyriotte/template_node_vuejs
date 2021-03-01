@@ -184,15 +184,8 @@ Des modules peuvent être ajouté pour enrichir l'IHM ex:
 
 ## Configuration Docker
 
-```sh
-cd docker
-touch docker_compose.yml
-touch node.dockerfile
-touch vue.dockerfile
-```
-
 ```yaml
-# ./docker/docker-compose.yml
+# ./docker-compose.yml
 
 version: "3.8"
 services:
@@ -205,11 +198,11 @@ services:
     tty: true
     stdin_open: true
     env_file:
-      - ../backend/.env
+      - ./backend/.env
     ports:
-      - 1337:8081
+      - 3001:3001
     volumes:
-      - ../backend:/app
+      - ./backend:/app
       - /app/node_modules
     networks:
       - app-network
@@ -220,14 +213,36 @@ services:
     container_name: frontend
     image: frontend
     env_file:
-      - ../frontend/.env
+      - ./frontend/.env
     tty: true
     stdin_open: true
     ports:
-      - 1338:3000
+      - 3000:3000
     volumes:
-      - ../frontend:/app
+      - ./frontend:/app
       - /app/node_modules
+    networks:
+      - app-network
+  mysql-server:
+    image: mysql/mysql-server:8.0.22-1.1.18
+    container_name: mysql-server
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - TZ=Europe/Paris
+    ports:
+      - 3306:3306
+    volumes:
+      - ./_data/mysql:/var/lib/mysql
+    networks:
+      - app-network
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - 3002:8080
+    links:
+      - mysql-server:db
     networks:
       - app-network
 networks:
@@ -237,15 +252,11 @@ networks:
 ```
 
 ```yaml
-# ./docker/node.dockerfile
+# ./node.dockerfile
 
-FROM node:12.18.1-alpine
+FROM node:15.10.0-alpine3.12
 
 RUN apk add --no-cache tzdata
-
-# Compatiblite Mac Apple Silicon (M1)
-RUN apk --no-cache add g++ gcc libgcc libstdc++ linux-headers make python
-RUN npm install --quiet node-gyp -g
 
 ENV TZ Europe/Paris
 RUN cp /usr/share/zoneinfo/Europe/Paris /etc/localtime
@@ -258,14 +269,32 @@ RUN npm install --loglevel verbose
 
 COPY ./backend .
 
-EXPOSE 8080
+EXPOSE 3001
 
-CMD ./node_modules/.bin/nodemon  --unhandled-rejections=strict --legacy-watch -r esm -r ./src/index.js
+CMD npm start
 ```
 
 ```yaml
-# ./docker/vue.dockerfile
+# ./vue.dockerfile
 
+FROM node:15.10.0-alpine3.12
+
+RUN apk add --no-cache tzdata
+
+ENV TZ Europe/Paris
+RUN cp /usr/share/zoneinfo/Europe/Paris /etc/localtime
+
+WORKDIR /app
+
+COPY ./frontend/package.json .
+
+RUN npm install --loglevel verbose
+
+COPY ./frontend .
+
+EXPOSE 3000
+
+CMD npm run dev
 
 ```
 

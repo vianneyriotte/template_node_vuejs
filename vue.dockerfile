@@ -1,4 +1,4 @@
-# ./docker/vue.dockerfile
+# ./vue.dockerfile
 
 FROM node:15.10.0-alpine3.12
 
