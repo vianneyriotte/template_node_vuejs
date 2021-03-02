@@ -13,7 +13,6 @@ router.post('/login', async function(req, res) {
 
 	loggers.trace(`Tentative de connexion de l'utilisateur '${email}'`);
 
-	// TODO : procédure d'authentification ...
 	const user = await models.User.findOne({
 		where: { email: 'john@doe.com' }
 	});

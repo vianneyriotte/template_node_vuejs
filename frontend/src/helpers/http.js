@@ -1,7 +1,7 @@
 import { store } from '../store';
 
 const _getOptions = ({ method = 'GET', data = null, secured = true }) => {
-	var headers = new Headers({
+	let headers = new Headers({
 		'Content-Type': 'application/json'
 	});
 	if (secured) {
@@ -11,7 +11,7 @@ const _getOptions = ({ method = 'GET', data = null, secured = true }) => {
 			'Content-Type': 'application/json'
 		});
 	}
-	var options = {
+	let options = {
 		method,
 		headers: headers
 	};

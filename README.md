@@ -1,4 +1,4 @@
-# Proposition de bonnes pratiques de développement - Backend/Frontend Node/Vue.js
+# Bonnes pratiques de développement - Backend/Frontend Node/Vue.js
 
 ## Objectif
 
@@ -68,24 +68,44 @@ npm i --save-dev nodemon
 Description des packages installés:
 
 - **<u>esm</u>** : permet d'écrire du code node en Ecmascript plutôt qu'en CommonJS
+  
   - Ex. remplacer les **require** par des **import**, ou des **module.exports** par des **export default** ...
+  
 - **<u>express</u>** : framework permettant de gérer les requests/responses, avec middleware, routers et autres modules ultra-pratiques pour un serveur d'APIs backend
+
 - **<u>body-parser</u>** : permet de parser automatiquement les requête json, url ou autres...
+
 - **<u>cors</u>** : pour gérer la configuration cors (cross origin resource sharing)
+
 - **<u>debug</u>** : fournit un logger permettant de logger à différents niveaux (debug, trace, error ...)
+
 - **<u>morgan</u>** : morgan est un middleware express permettant de logger les request/response
+
 - **<u>jsonwebtoken</u>** : permet de gérer les JWT
+
 - **<u>node-fetch</u>** : permet de requeter une API HTTP externe
+
 - **<u>fs</u>** : gestion filesystem
+
 - **<u>moment</u>** : gestion de dates/time
+
 - **<u>lodash</u>** : manipulation des liste, array ou autres tools pratiques
+
 - **<u>sequelize</u>** : ORM pour gérer les données en base
+
 - **<u>serverless-mysql</u>** : pour requêter sous forme de requêtes SQL lorsqu'il faut dénormaliser ou gérer des données en masse
+
 - **<u>mysql2</u>**: utilisé par sequelize (orm)
+
 - **<u>nodemon</u>** : permet d'exécuter le projet en mode développement avec du hot-reloading
+
 - **<u>bcryptjs</u>**: pour saler les mot de passe
-- **<u>boostrap</u>**: pour les style css boostrap
-- **<u>sass</u>**: utilisation de sass (avec boost rap par exemple ou autre...)
+
+- Express-fileupload?
+
+- CSV?
+
+  
 
 ### Variables d'environnement
 
