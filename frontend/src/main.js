@@ -1,4 +1,6 @@
-import { createApp } from 'vue';
+import {
+    createApp
+} from 'vue';
 
 import Toast from './addons/toast';
 
@@ -6,9 +8,8 @@ import router from './router';
 
 import App from './App.vue';
 
-import '@popperjs/core/dist/esm/popper.js';
-// import 'bootstrap/dist/js/bootstrap.min.js';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import '@popperjs/core/dist/esm/popper-lite.js';
+import 'bootstrap/dist/js/bootstrap.min.js';
 
 import './app.scss';
 
