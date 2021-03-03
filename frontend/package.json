@@ -7,7 +7,8 @@
 		"serve": "./node_modules/.bin/vite preview"
 	},
 	"dependencies": {
-		"bootstrap": "^4.6.0",
+		"@popperjs/core": "^2.9.0",
+		"bootstrap": "^5.0.0-beta2",
 		"lodash": "^4.17.21",
 		"sass": "^1.32.8",
 		"vue": "^3.0.5",

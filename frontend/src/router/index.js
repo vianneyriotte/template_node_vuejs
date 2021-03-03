@@ -19,7 +19,6 @@ const routes = [
 			if (await storage.isConnected()) {
 				next();
 			} else {
-				console.log(await storage.getUser());
 				next('/login');
 			}
 		}
