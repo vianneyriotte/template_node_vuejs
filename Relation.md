@@ -6,7 +6,7 @@
 const Sequelize = require('sequelize');
 
 export default {
-	id_envelope: {
+	id: {
 		type: Sequelize.INTEGER,
 		allowNull: false,
 		primaryKey: true
@@ -16,11 +16,11 @@ export default {
 		allowNull: false
 	},
 	id_user_recupere: {
-		type: Sequelize.TINYINT,
+		type: Sequelize.INTEGER,
 		allowNull: true
 	},
 	id_user_traite: {
-		type: Sequelize.TINYINT,
+		type: Sequelize.INTEGER,
 		allowNull: true
 	},
 	date: {
@@ -66,12 +66,13 @@ export default {
 };
 ```
 
-## Définitions
+## Définitions (relations...)
 
 ```javascript
 // ./models/index.js
-import config from '../config';
 import Sequelize from 'sequelize';
+
+import config from '../config';
 
 import user from './user';
 import envelope from './envelope';
@@ -94,27 +95,31 @@ const Envelope = sequelize.define('envelope', envelope, {
 	tableName: 'envelope',
 	timestamps: false
 });
-
-// Définitions des relations
+// Définition des relations
 Envelope.hasOne(User, {
 	foreignKey: 'id',
 	sourceKey: 'id_user_traite',
-	as: 'UserTraite'
+	as: 'UserTraite',
+	constraints: false
 });
 Envelope.hasOne(User, {
 	foreignKey: 'id',
 	sourceKey: 'id_user_recupere',
-	as: 'UserRecupere'
+	as: 'UserRecupere',
+	constraints: false
 });
+
 User.hasMany(Envelope, {
 	foreignKey: 'id_user_traite',
 	sourceKey: 'id',
-	as: 'EnveloppesTraitees'
+	as: 'EnveloppesTraitees',
+	constraints: false
 });
 User.hasMany(Envelope, {
 	foreignKey: 'id_user_recupere',
 	sourceKey: 'id',
-	as: 'EnveloppesRecuperees'
+	as: 'EnveloppesRecuperees',
+	constraints: false
 });
 
 User.sync();
@@ -124,7 +129,6 @@ export default {
 	User,
 	Envelope
 };
-
 ```
 
 ## Exemple d'utilisation
@@ -137,73 +141,73 @@ import Sequelize from 'sequelize';
 
 // ...
 
-// Création de 2 utilisateurs
+// Création de 2 users
 let user = await models.User.findOrCreate({
-    where: { email: 'john@doe.com' },
-    defaults: { id: 1, email: 'john@doe.com', firstname: 'John', lastname: 'DOE', password: salt('abcd') }
+	where: { email: 'john@doe.com' },
+	defaults: { id: 1, email: 'john@doe.com', firstname: 'John', lastname: 'DOE', password: salt('abcd') }
 });
+
 user = await models.User.findOrCreate({
-    where: { email: 'marge@simpson.com' },
-    defaults: { id: 2, email: 'marge@simpson.com', firstname: 'Marge', lastname: 'SIMPSON', password: salt('abcd') }
+	where: { email: 'marge@simpson.com' },
+	defaults: { id: 2, email: 'marge@simpson.com', firstname: 'Marge', lastname: 'SIMPSON', password: salt('abcd') }
 });
 
 // Création de 2 enveloppes
 let envelope = await models.Envelope.findOrCreate({
-    where: { id_envelope: 1 },
-    defaults: { recuperee: true, id_user_recupere: 1, id_user_traite: 2, date: Sequelize.fn('NOW') }
+	where: { id: 1 },
+	defaults: { id: 1, recuperee: true, id_user_recupere: 1, id_user_traite: 2, date: Sequelize.fn('NOW') }
 });
+
 envelope = await models.Envelope.findOrCreate({
-    where: { id_envelope: 2 },
-    defaults: { recuperee: true, id_user_recupere: 1, id_user_traite: 1, date: Sequelize.fn('NOW') }
+	where: { id: 2 },
+	defaults: { id: 2, recuperee: true, id_user_recupere: 1, id_user_traite: 1, date: Sequelize.fn('NOW') }
 });
 
-
-// Test de récupération d'une enveloppe (et les utilisateur qui ont "géré")
+// Exemple de récupération  d'enveloppe et de user
 const testEnveloppe = await models.Envelope.findOne({
-    where: { id_envelope: 1 },
-    include: [ 'UserTraite', 'UserRecupere' ]
+	where: { id: 1 },
+	include: [ 'UserTraite', 'UserRecupere' ]
 });
 
-// Test de récupération des utilisateurs (et les enveloppes qu'ils ont "géré")
 const testUser = await models.User.findOne({
-    where: { id: 1 },
-    include: [ 'EnveloppesTraitees', 'EnveloppesRecuperees' ]
+	where: { id: 1 },
+	include: [ 'EnveloppesTraitees', 'EnveloppesRecuperees' ]
 });
 
 const testUser2 = await models.User.findOne({
-    where: { id: 2 },
-    include: [ 'EnveloppesTraitees', 'EnveloppesRecuperees' ]
+	where: { id: 2 },
+	include: [ 'EnveloppesTraitees', 'EnveloppesRecuperees' ]
 });
 
+// Affichage des traces
 loggers.trace(JSON.stringify(testEnveloppe));
 loggers.trace(JSON.stringify(testUser));
 loggers.trace(JSON.stringify(testUser2));
 // ...
-
 ```
 
 Exemple de traces:
 ```javascript
 // loggers.trace(JSON.stringify(testEnveloppe));
 {
-   "id_envelope":1,
+   "id":1,
    "recuperee":true,
    "id_user_recupere":1,
    "id_user_traite":2,
-   "date":"2021-03-04T18:03:04.000Z",
+   "date":"2021-03-04T19:59:24.000Z",
    "UserTraite":{
       "id":2,
       "email":"marge@simpson.com",
       "firstname":"Marge",
       "lastname":"SIMPSON",
-      "password":"$2a$10$4e/BzEkOUoP1LF5d4BmrO.CaSht/FdRwgQEtYB6lNG9ekFQY9D/kO"
+      "password":"$2a$10$YqIrJjw48I2pRW0V3YICOemuCMgKpxIO5/1AwxJqmOCVhoG225IOK"
    },
    "UserRecupere":{
       "id":1,
       "email":"john@doe.com",
       "firstname":"John",
       "lastname":"DOE",
-      "password":"$2a$10$FpENIVYp.40xwq4MS30uBuWC/T/dCFZNX8jzKj91.xA9Ivq19cp/C"
+      "password":"$2a$10$6hDp/Bq7fz6zvwQeXy5KmOtFZN3w5ksUXlbzm5Yr0pEJU0rFrSbiS"
    }
 }
 ```
@@ -215,30 +219,30 @@ Exemple de traces:
    "email":"john@doe.com",
    "firstname":"John",
    "lastname":"DOE",
-   "password":"$2a$10$FpENIVYp.40xwq4MS30uBuWC/T/dCFZNX8jzKj91.xA9Ivq19cp/C",
+   "password":"$2a$10$6hDp/Bq7fz6zvwQeXy5KmOtFZN3w5ksUXlbzm5Yr0pEJU0rFrSbiS",
    "EnveloppesTraitees":[
       {
-         "id_envelope":2,
+         "id":2,
          "recuperee":true,
          "id_user_recupere":1,
          "id_user_traite":1,
-         "date":"2021-03-04T18:51:32.000Z"
+         "date":"2021-03-04T19:59:24.000Z"
       }
    ],
    "EnveloppesRecuperees":[
       {
-         "id_envelope":2,
+         "id":2,
          "recuperee":true,
          "id_user_recupere":1,
          "id_user_traite":1,
-         "date":"2021-03-04T18:51:32.000Z"
+         "date":"2021-03-04T19:59:24.000Z"
       },
       {
-         "id_envelope":1,
+         "id":1,
          "recuperee":true,
          "id_user_recupere":1,
          "id_user_traite":2,
-         "date":"2021-03-04T18:03:04.000Z"
+         "date":"2021-03-04T19:59:24.000Z"
       }
    ]
 }

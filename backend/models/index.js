@@ -32,23 +32,27 @@ const Envelope = sequelize.define('envelope', envelope, {
 Envelope.hasOne(User, {
 	foreignKey: 'id',
 	sourceKey: 'id_user_traite',
-	as: 'UserTraite'
+	as: 'UserTraite',
+	constraints: false
 });
 Envelope.hasOne(User, {
 	foreignKey: 'id',
 	sourceKey: 'id_user_recupere',
-	as: 'UserRecupere'
+	as: 'UserRecupere',
+	constraints: false
 });
 
 User.hasMany(Envelope, {
 	foreignKey: 'id_user_traite',
 	sourceKey: 'id',
-	as: 'EnveloppesTraitees'
+	as: 'EnveloppesTraitees',
+	constraints: false
 });
 User.hasMany(Envelope, {
 	foreignKey: 'id_user_recupere',
 	sourceKey: 'id',
-	as: 'EnveloppesRecuperees'
+	as: 'EnveloppesRecuperees',
+	constraints: false
 });
 
 User.sync();

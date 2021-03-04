@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
 export default {
-	id_envelope: {
+	id: {
 		type: Sequelize.INTEGER,
 		allowNull: false,
 		primaryKey: true
@@ -11,11 +11,11 @@ export default {
 		allowNull: false
 	},
 	id_user_recupere: {
-		type: Sequelize.TINYINT,
+		type: Sequelize.INTEGER,
 		allowNull: true
 	},
 	id_user_traite: {
-		type: Sequelize.TINYINT,
+		type: Sequelize.INTEGER,
 		allowNull: true
 	},
 	date: {

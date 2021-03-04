@@ -71,17 +71,17 @@ const addUsersDemo = async () => {
 	});
 
 	let envelope = await models.Envelope.findOrCreate({
-		where: { id_envelope: 1 },
-		defaults: { recuperee: true, id_user_recupere: 1, id_user_traite: 2, date: Sequelize.fn('NOW') }
+		where: { id: 1 },
+		defaults: { id: 1, recuperee: true, id_user_recupere: 1, id_user_traite: 2, date: Sequelize.fn('NOW') }
 	});
 
 	envelope = await models.Envelope.findOrCreate({
-		where: { id_envelope: 2 },
-		defaults: { recuperee: true, id_user_recupere: 1, id_user_traite: 1, date: Sequelize.fn('NOW') }
+		where: { id: 2 },
+		defaults: { id: 2, recuperee: true, id_user_recupere: 1, id_user_traite: 1, date: Sequelize.fn('NOW') }
 	});
 
 	const testEnveloppe = await models.Envelope.findOne({
-		where: { id_envelope: 1 },
+		where: { id: 1 },
 		include: [ 'UserTraite', 'UserRecupere' ]
 	});
 
