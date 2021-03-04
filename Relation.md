@@ -183,7 +183,7 @@ loggers.trace(JSON.stringify(testUser2));
 ```
 
 Exemple de traces:
-```json
+```javascript
 // loggers.trace(JSON.stringify(testEnveloppe));
 {
    "id_envelope":1,
@@ -208,7 +208,7 @@ Exemple de traces:
 }
 ```
 
-```json
+```javascript
 // loggers.trace(JSON.stringify(testUser));
 {
    "id":1,
