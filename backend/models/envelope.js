@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const User = require('./user');
 
 const Envelope = {
 	id_envelope: {
