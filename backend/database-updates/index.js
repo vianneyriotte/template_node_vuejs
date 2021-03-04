@@ -2,6 +2,7 @@ import DbConnection from '../helpers/db_connection';
 import models from '../models';
 import { salt, saltVerify } from '../helpers/security';
 import config from '../config';
+import Sequelize from 'sequelize';
 
 const { db, loggers } = config;
 
@@ -57,12 +58,48 @@ const insertOrUpdate_MATABLE = async () => {
 	}
 };
 
-const addUserDemo = async () => {
+const addUsersDemo = async () => {
 	//await models.User.create({ email: 'user@demo.com', firstname: 'John', lastname: 'DOE' });
-	const user = await models.User.findOrCreate({
+	let user = await models.User.findOrCreate({
 		where: { email: 'john@doe.com' },
-		defaults: { email: 'john@doe.com', firstname: 'John', lastname: 'DOE', password: salt('abcd') }
+		defaults: { id: 1, email: 'john@doe.com', firstname: 'John', lastname: 'DOE', password: salt('abcd') }
 	});
+
+	user = await models.User.findOrCreate({
+		where: { email: 'marge@simpson.com' },
+		defaults: { id: 2, email: 'marge@simpson.com', firstname: 'Marge', lastname: 'SIMPSON', password: salt('abcd') }
+	});
+
+	let envelope = await models.Envelope.findOrCreate({
+		where: { id_envelope: 1 },
+		defaults: { recuperee: true, id_user_recupere: 1, id_user_traite: 2, date: Sequelize.fn('NOW') }
+	});
+
+	envelope = await models.Envelope.findOrCreate({
+		where: { id_envelope: 2 },
+		defaults: { recuperee: true, id_user_recupere: 1, id_user_traite: 1, date: Sequelize.fn('NOW') }
+	});
+
+	const testEnveloppe = await models.Envelope.findOne({
+		where: { id_envelope: 1 },
+		include: [ 'UserTraite', 'UserRecupere' ]
+	});
+
+	loggers.trace(JSON.stringify(testEnveloppe));
+
+	const testUser = await models.User.findOne({
+		where: { id: 1 },
+		include: [ 'EnveloppeTraitees', 'EnveloppeRecuperees' ]
+	});
+
+	loggers.trace(JSON.stringify(testUser));
+
+	const testUser2 = await models.User.findOne({
+		where: { id: 2 },
+		include: [ 'EnveloppeTraitees', 'EnveloppeRecuperees' ]
+	});
+
+	loggers.trace(JSON.stringify(testUser));
 };
 
 export default {
@@ -73,7 +110,7 @@ export default {
 		await add_Column_DateCreation_MATABLE();
 		await insertOrUpdate_MATABLE();
 
-		await addUserDemo();
+		await addUsersDemo();
 
 		loggers.trace('Fin de la mise à jour de la base.');
 	}

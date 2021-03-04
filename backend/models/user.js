@@ -1,6 +1,11 @@
 const Sequelize = require('sequelize');
 
 export default {
+	id: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+		notEmpty: true
+	},
 	email: {
 		type: Sequelize.STRING,
 		allowNull: false,
