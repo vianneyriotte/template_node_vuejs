@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const Envelope = {
+export default {
 	id_envelope: {
 		type: Sequelize.INTEGER,
 		allowNull: false,
@@ -23,5 +23,3 @@ const Envelope = {
 		allowNull: true
 	}
 };
-
-export default Envelope;

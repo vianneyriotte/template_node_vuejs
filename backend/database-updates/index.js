@@ -96,8 +96,8 @@ const addUsersDemo = async () => {
 	});
 	loggers.trace(JSON.stringify(testEnveloppe));
 
-	// loggers.trace(JSON.stringify(testUser));
-	// loggers.trace(JSON.stringify(testUser));
+	loggers.trace(JSON.stringify(testUser));
+	loggers.trace(JSON.stringify(testUser2));
 };
 
 export default {
