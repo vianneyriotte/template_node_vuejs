@@ -1,3 +1,4 @@
+# Proposition d'exemple de configuration de relation avec Sequelize
 ## Enveloppe
 
 ```javascript
