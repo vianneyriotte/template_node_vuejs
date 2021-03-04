@@ -85,21 +85,19 @@ const addUsersDemo = async () => {
 		include: [ 'UserTraite', 'UserRecupere' ]
 	});
 
-	loggers.trace(JSON.stringify(testEnveloppe));
-
 	const testUser = await models.User.findOne({
 		where: { id: 1 },
-		include: [ 'EnveloppeTraitees', 'EnveloppeRecuperees' ]
+		include: [ 'EnveloppesTraitees', 'EnveloppesRecuperees' ]
 	});
-
-	loggers.trace(JSON.stringify(testUser));
 
 	const testUser2 = await models.User.findOne({
 		where: { id: 2 },
-		include: [ 'EnveloppeTraitees', 'EnveloppeRecuperees' ]
+		include: [ 'EnveloppesTraitees', 'EnveloppesRecuperees' ]
 	});
+	loggers.trace(JSON.stringify(testEnveloppe));
 
-	loggers.trace(JSON.stringify(testUser));
+	// loggers.trace(JSON.stringify(testUser));
+	// loggers.trace(JSON.stringify(testUser));
 };
 
 export default {
