@@ -14,7 +14,7 @@ node_modules/.bin/sequelize init
 
 On va renommer le fichier **config.json** en **config.js** :
 
-```json
+```javascript
 // config.js
 module.exports = {
 	development: {
