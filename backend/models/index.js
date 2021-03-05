@@ -1,65 +1,38 @@
-import Sequelize from 'sequelize';
+'use strict';
 
-import config from '../config';
+const fs = require('fs');
+const path = require('path');
+const Sequelize = require('sequelize');
+const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || 'development';
+// const config = require(__dirname + '/../config/config.json')[env];
+const config = require(__dirname + '/../config/config.js')['development']; // Modification
+const db = {};
 
-const { MYSQL_DBHOST, MYSQL_DBUSER, MYSQL_DBPWD, MYSQL_DBPORT, DBNAME, DB_LOGS } = config.db;
+let sequelize;
+if (config.use_env_variable) {
+	sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+	sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
 
-import user from './user';
-import ma_table from './ma_table';
-import envelope from './envelope';
+fs
+	.readdirSync(__dirname)
+	.filter((file) => {
+		return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
+	})
+	.forEach((file) => {
+		const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+		db[model.name] = model;
+	});
 
-const sequelize = new Sequelize(DBNAME, MYSQL_DBUSER, MYSQL_DBPWD, {
-	host: MYSQL_DBHOST,
-	port: MYSQL_DBPORT,
-	logging: DB_LOGS ? true : false,
-	dialect: 'mysql',
-	freezeTableName: true
+Object.keys(db).forEach((modelName) => {
+	if (db[modelName].associate) {
+		db[modelName].associate(db);
+	}
 });
 
-const User = sequelize.define('users', user, {
-	tableName: 'users',
-	timestamps: false
-});
-const MaTable = sequelize.define('ma_table', ma_table, {
-	tableName: 'ma_table',
-	timestamps: false
-});
-const Envelope = sequelize.define('envelope', envelope, {
-	tableName: 'envelope',
-	timestamps: false
-});
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
-Envelope.hasOne(User, {
-	foreignKey: 'id',
-	sourceKey: 'id_user_traite',
-	as: 'UserTraite',
-	constraints: false
-});
-Envelope.hasOne(User, {
-	foreignKey: 'id',
-	sourceKey: 'id_user_recupere',
-	as: 'UserRecupere',
-	constraints: false
-});
-
-User.hasMany(Envelope, {
-	foreignKey: 'id_user_traite',
-	sourceKey: 'id',
-	as: 'EnveloppesTraitees',
-	constraints: false
-});
-User.hasMany(Envelope, {
-	foreignKey: 'id_user_recupere',
-	sourceKey: 'id',
-	as: 'EnveloppesRecuperees',
-	constraints: false
-});
-
-User.sync();
-Envelope.sync();
-
-export default {
-	User,
-	MaTable,
-	Envelope
-};
+module.exports = db;
