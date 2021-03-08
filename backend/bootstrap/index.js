@@ -3,6 +3,9 @@ import cors from 'cors';
 const morgan = require('morgan'); // Hack: Pour éviter un warning deprecated
 import bodyParser from 'body-parser';
 
+import swaggerUI from 'swagger-ui-express';
+import { swaggerDocument } from '../swagger';
+
 import config from '../config';
 import routes from '../routes';
 
@@ -36,6 +39,9 @@ app.use(
 		extended: true
 	})
 );
+
+// Ajout de la route swagger
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use('', routes);
 
