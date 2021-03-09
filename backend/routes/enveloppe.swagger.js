@@ -15,7 +15,7 @@ export const Enveloppe = {
 export const getAllEnveloppes = {
 	tags: [ 'Enveloppes' ],
 	description: 'Retourne la liste des enveloppes',
-	operationId: 'gertAll',
+	operationId: 'getAll',
 	security: [
 		{
 			bearerAuth: []
