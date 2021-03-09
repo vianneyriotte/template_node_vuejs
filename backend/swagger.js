@@ -1,4 +1,4 @@
-import { getAllEnveloppes } from './routes/enveloppe.swagger';
+import { Enveloppe, getAllEnveloppes } from './routes/enveloppe.swagger';
 
 export const swaggerDocument = {
 	openapi: '3.0.1',
@@ -34,19 +34,7 @@ export const swaggerDocument = {
 	// ],
 	components: {
 		schemas: {
-			Enveloppe: {
-				type: 'object',
-				properties: {
-					id: {
-						type: 'integer',
-						description: 'Id'
-					},
-					recuperee: {
-						type: 'boolean',
-						description: "Indique si l'enveloppe a été récupérée"
-					}
-				}
-			}
+			Enveloppe
 		},
 		securitySchemes: {
 			bearerAuth: {

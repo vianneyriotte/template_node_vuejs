@@ -1,3 +1,17 @@
+export const Enveloppe = {
+	type: 'object',
+	properties: {
+		id: {
+			type: 'integer',
+			description: 'Id'
+		},
+		recuperee: {
+			type: 'boolean',
+			description: "Indique si l'enveloppe a été récupérée"
+		}
+	}
+};
+
 export const getAllEnveloppes = {
 	tags: [ 'Enveloppes' ],
 	description: 'Retourne la liste des enveloppes',
